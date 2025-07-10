@@ -25,55 +25,54 @@ foodlist = {
 df = pd.DataFrame(foodlist)
 
 # App title
-st.title("Food Calorie Calculator - Amura")
-st.markdown("Enter the name of a food item (correct capitalisation) and its weight (in grams). I will calculate the total calories based on your reference list.")
+st.title("🍽️ Food Calorie Calculator - Amura")
+st.markdown("Enter multiple food items and their weights. I’ll calculate total calories based on your reference list.")
 
 # Number of items
 num_items = st.number_input("How many items in your meal?", min_value=1, max_value=20, value=3, step=1)
 
 meal_data = []
+
 for i in range(num_items):
     st.markdown(f"#### Item {i+1}")
     col1, col2 = st.columns(2)
     with col1:
         food_input = st.text_input(f"Food name #{i+1}", key=f"food_{i}").strip()
     with col2:
-        weight_input = st.number_input(f"Weight in grams #{i+1}", min_value=0.0, step=10.0, key=f"weight_{i}")
+        weight_input = st.number_input(f"Weight (g or tbsp) #{i+1}", min_value=0.0, step=10.0, key=f"weight_{i}")
     
-    # Only calculate if food name is filled
-if food_input:
-    food_name = food_input.lower()
-    match = ref_df[ref_df["Food"].str.lower() == food_name]
+    if food_input:
+        food_name = food_input.lower()
+        match = df[df["Food"].str.lower() == food_name]
 
-    if not match.empty:
-        cal_per_100g = match.iloc[0]["Calories_per_100g"]
+        if not match.empty:
+            cal_per_100g = match.iloc[0]["Calories_per_100g"]
 
-        # Special case: Egg White → fixed 15 kcal per 26g
-        if food_name == "egg white":
-            total_calories = 15
+            # Special case: Egg White → fixed 15 kcal per 26g
+            if food_name == "egg white":
+                total_calories = 15
 
-        # Special case: Egg → fixed 75 kcal per egg
-        elif food_name == "egg":
-            total_calories = 75
+            # Special case: Egg → fixed 75 kcal per egg
+            elif food_name == "egg":
+                total_calories = 75
 
-        # Oils/Ghee measured in tablespoons (1 tbsp = 13.5g)
-        elif food_name in ["olive oil", "ghee", "coconut oil"]:
-            grams_per_tbsp = 13.5
-            total_calories = (weight_input * grams_per_tbsp * cal_per_100g) / 100
+            # Oils/Ghee measured in tablespoons (1 tbsp = 13.5g)
+            elif food_name in ["olive oil", "ghee", "coconut oil"]:
+                grams_per_tbsp = 13.5
+                total_calories = (weight_input * grams_per_tbsp * cal_per_100g) / 100
 
-        # Default gram-based calculation
+            # Default gram-based calculation
+            else:
+                total_calories = (weight_input * cal_per_100g) / 100
+
+            meal_data.append({
+                "Food": food_input.title(),
+                "Weight": f"{weight_input} {'tbsp' if food_name in ['olive oil', 'ghee', 'coconut oil'] else 'g'}",
+                "Cal/100g": cal_per_100g,
+                "Total Calories": round(total_calories, 2)
+            })
         else:
-            total_calories = (weight_input * cal_per_100g) / 100
-
-        meal_data.append({
-            "Food": food_input.title(),
-            "Weight": f"{weight_input} {'tbsp' if food_name in ['olive oil', 'ghee', 'coconut oil'] else 'g'}",
-            "Cal/100g": cal_per_100g,
-            "Total Calories": round(total_calories, 2)
-        })
-    else:
-        st.error(f"Item {i+1}: '{food_input}' not found in reference list.")
-
+            st.error(f"Item {i+1}: '{food_input}' not found in reference list.")
 
 # --- Display Results ---
 if meal_data:
