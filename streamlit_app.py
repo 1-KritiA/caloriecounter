@@ -22,21 +22,41 @@ data = {
 df = pd.DataFrame(data)
 
 # App title
-st.title("🥦 Food Calorie Calculator")
+st.title("Food Calorie Calculator - Amura")
+st.markdown("Enter the name of a food item (correct capitalisation) and its weight (in grams). I will calculate the total calories based on your reference list.")
 
-st.markdown("Enter the name of a food item and its weight (in grams). The app will calculate the total calories based on your reference list.")
+# Number of items
+num_items = st.number_input("How many items in your meal?", min_value=1, max_value=20, value=3, step=1)
 
-# User input
-food_input = st.text_input("Enter food name").strip()
-weight_input = st.number_input("Enter weight in grams", min_value=0.0, step=10.0)
+meal_data = []
+for i in range(num_items):
+    st.markdown(f"#### Item {i+1}")
+    col1, col2 = st.columns(2)
+    with col1:
+        food_input = st.text_input(f"Food name #{i+1}", key=f"food_{i}").strip()
+    with col2:
+        weight_input = st.number_input(f"Weight in grams #{i+1}", min_value=0.0, step=10.0, key=f"weight_{i}")
+    
+    # Only calculate if food name is filled
+    if food_input:
+        match = ref_df[ref_df["Food"].str.lower() == food_input.lower()]
+        if not match.empty:
+            cal_per_100g = match.iloc[0]["Calories_per_100g"]
+            total_calories = (weight_input * cal_per_100g) / 100
+            meal_data.append({
+                "Food": food_input.title(),
+                "Weight (g)": weight_input,
+                "Cal/100g": cal_per_100g,
+                "Total Calories": round(total_calories, 2)
+            })
+        else:
+            st.error(f"Item {i+1}: '{food_input}' not found in reference list.")
 
-# Lookup and compute
-if food_input:
-    match = df[df["Food"].str.lower() == food_input.lower()]
-    if not match.empty:
-        cal_per_100g = match.iloc[0]["Calories_per_100g"]
-        total_calories = (weight_input * cal_per_100g) / 100
-        st.success(f"Calories per 100g of {food_input.title()}: {cal_per_100g} kcal")
-        st.write(f"Total calories for {weight_input}g of {food_input.title()}: **{total_calories:.2f} kcal**")
-    else:
-        st.error("Food item not found in reference list.")
+# --- Display Results ---
+if meal_data:
+    result_df = pd.DataFrame(meal_data)
+    st.markdown("### 🧾 Meal Breakdown")
+    st.dataframe(result_df, use_container_width=True)
+
+    total_meal_cals = result_df["Total Calories"].sum()
+    st.markdown(f"### 🧮 **Total Meal Calories: {total_meal_cals:.2f} kcal**")
