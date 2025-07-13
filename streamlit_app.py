@@ -12,13 +12,13 @@ foodlist = {
         "Brown Rice", "Basmati Rice", "Poha", "Puffed Rice", "Bajra", "Jowar", "Ragi", "Oats", "Sabudana", 
         "Butter", "Olive Oil", "Egg White", "Ghee", "Coconut Oil", "Banana", "Fig", "Grapes", "Kiwi", "Orange", 
         "Papaya", "Pomegranate", "Watermelon", "Toor Dal", "Moong Dal", "Urad Dal", "Besan", "White Chana", 
-        "Rajma", "Milk", "Almond Milk", "Peanuts", "Cashew", "Egg", "Almond Flour"
+        "Rajma", "Milk", "Almond Milk", "Peanuts", "Cashew", "Egg", "Almond Flour", "Raspberry", "Flax Seeds"
     ],
     "Calories_per_100g": [
         25, 40, 32, 150, 41, 43, 25, 35, 15, 16, 31, 23, 160, 15, 17, 20, 12, 80, 149, 161, 142, 100, 264, 355, 27,
         750, 750, 57, 30, 655, 580, 448, 695, 44, 280, 89, 77, 31, 29, 22, 25, 23, 107, 130, 112, 118, 130, 402, 
         320, 378, 354, 390, 352, 204, 119, 15, 120, 117, 84, 72, 67, 61, 47, 43, 68, 30, 318, 344, 350, 388, 246, 
-        127, 61, 16.4, 568, 552, 75, 571
+        127, 61, 16.4, 568, 552, 75, 571, 53, 600
     ]
 }
 
